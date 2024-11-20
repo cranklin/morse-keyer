@@ -1,7 +1,29 @@
+/*
+ * Copyright (C) 2024 Edward Kim (KE6EEK cranklin.com @crankerson)
+ *
+ * This file is part of KE6EEK Morse Keyer.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
+
+
 #include <Keyboard.h>
 
 /* CONFIG */
-int mode = 1;                   // 1: straight key (or software keyer) 2: iambic A 3: iambic B 
+int mode = 1;                   // 1: straight key (or software keyer) 2: iambic A 3: iambic B
 const bool speaker = true;      // speaker on or off (keep it on with jumper on/off)
 const bool kbEmulator = true;  // keyboard emulator on or off
 const bool keyer = true;        // analog keyer to radio output
@@ -9,8 +31,8 @@ const char key1 = KEY_LEFT_CTRL;            // ascii character for dit (or strai
 const char key2 = KEY_RIGHT_CTRL;            // ascii character for dah
 const int note = 500;           // music note/pitch
 const int debounceLimit = 10;
-int wpm = 23; 
-int unit = 60;            
+int wpm = 23;
+int unit = 60;
 
 const int button1Pin = 3;       // dit (or straight key)
 const int button2Pin = 5;       // dah
@@ -101,7 +123,7 @@ void loop() {
     }
     oscillatePaddle();
   }
-  
+
   if (Serial.available()) {
     String strInput = Serial.readString();
     int len = strInput.length();
@@ -220,7 +242,7 @@ void loop() {
           break;
         case '.':
           keyString += "1212123";
-          break;  
+          break;
         case ',':
           keyString += "2211223";
           break;
@@ -315,7 +337,7 @@ void oscillatePaddle() {
     }
   }
   if (ditState) {
-    if (!queue) { 
+    if (!queue) {
       if ((!dahState && !sending && millis() - signalStopTime >= unit) || lastKey == 2) {
         queue = 1;
       }
@@ -326,7 +348,7 @@ void oscillatePaddle() {
     }
   }
   if (dahState) {
-    if (!queue) { 
+    if (!queue) {
       if ((!ditState && !sending && millis() - signalStopTime >= unit) || lastKey == 1) {
         queue = 2;
       }
@@ -339,7 +361,7 @@ void oscillatePaddle() {
   if (!sending && millis() - signalStopTime >= unit) {
     processQueue();
   } else if (sending) { // middle of sending
-    if ((lastKey == 1 && millis() - signalStartTime >= unit) || (lastKey == 2 && millis() - signalStartTime >= unit * 3)) { // send length achieved 
+    if ((lastKey == 1 && millis() - signalStartTime >= unit) || (lastKey == 2 && millis() - signalStartTime >= unit * 3)) { // send length achieved
       stopSignal();
     }
   }
